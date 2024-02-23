@@ -3,14 +3,14 @@ import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectAttempts} from "../../../slices/AttemptSlice";
 
-let WIDTH = 1000;
-let HEIGHT = 1000;
+let WIDTH = 750;
+let HEIGHT = 750;
 const X_CENTER = 0;
 const Y_CENTER = 0;
 const BACKGROUND_COLOR = '#fff';
 let CANVAS = null;
 const AXES_COLOR = '#000'
-const AREA_COLOR = 'lightgray';
+const AREA_COLOR = '#ffda91';
 let scale = 0.017;
 const scaleLastPoint = 10;
 const pointsScale = 5;
@@ -260,23 +260,30 @@ let drawGrid = () => {
 
 let drawArea = (r) => {
     CANVAS.rect(WIDTH, HEIGHT).fill(BACKGROUND_COLOR);
-    //here diameter needed
-    CANVAS.circle(r / scale).fill(AREA_COLOR).move(convertX(-r / 2), convertY(r / 2))
+
+    // четверть окружности
+    CANVAS.circle(r*2 / scale).fill(AREA_COLOR).move(convertX(-r), convertY(r))
     const fillUnusedCircle = (convertX(0)) + ',' + (convertY(0)) + ' ' +
-        (convertX(-r / 2)) + ',' + (convertY(0)) + ' ' +
-        (convertX(-r / 2)) + ',' + (convertY(r / 2)) + ' ' +
-        (convertX(r / 2)) + ',' + (convertY(r / 2)) + ' ' +
-        (convertX(r / 2)) + ',' + (convertY(-r / 2)) + ' ' +
-        (convertX(0)) + ',' + (convertY(-r / 2));
+        (convertX(-r)) + ',' + (convertY(0)) + ' ' +
+        (convertX(-r)) + ',' + (convertY(r)) + ' ' +
+        (convertX(r)) + ',' + (convertY(r)) + ' ' +
+        (convertX(r)) + ',' + (convertY(-r)) + ' ' +
+        (convertX(0)) + ',' + (convertY(-r));
 
     CANVAS.polygon(fillUnusedCircle).fill(BACKGROUND_COLOR)
+
+    // прямоугольник
     const area = (convertX(0)) + ',' + (convertY(0)) + ' ' +
-        (convertX(0)) + ',' + (convertY(r)) + ' ' +
-        (convertX(r)) + ',' + (convertY(r)) + ' ' +
-        (convertX(r)) + ',' + (convertY(0)) + ' ' +
-        (convertX(0)) + ',' + (convertY(-r / 2));
-    //console.log('area coordinates ' + area)
+        (convertX(0)) + ',' + (convertY(-r)) + ' ' +
+        (convertX(r)) + ',' + (convertY(-r)) + ' ' +
+        (convertX(r)) + ',' + (convertY(0));
     CANVAS.polygon(area).fill(AREA_COLOR)
+
+    const triangle = (convertX(0)) + ',' + (convertY(0)) + ' ' +
+        (convertX(0)) + ',' + (convertY(r/2)) + ' ' +
+        (convertX(-r)) + ',' + (convertY(0));
+    CANVAS.polygon(triangle).fill(AREA_COLOR)
+
 }
 
 let drawPoint = (x, y, result, pointScale) => {

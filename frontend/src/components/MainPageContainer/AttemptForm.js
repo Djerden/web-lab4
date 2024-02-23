@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Title from '../Title';
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,9 +8,14 @@ import Select from "react-select";
 import {setR, UpdatePlot} from "./plot/plotScripts";
 import Plot from "./plot/Plot";
 
+import { Slider } from "primereact/slider";
+import { InputText } from "primereact/inputtext";
+
 const AttemptForm = ({serverPort}) => {
   const token =  useSelector(selectToken);
   const dispatch = useDispatch();
+
+const [value, setValue] = useState(2);
 
   const {
     register,
@@ -41,27 +46,29 @@ const AttemptForm = ({serverPort}) => {
     );
   };
 
-    const options = [
+    /*const options = [
         { value: '-2', label: '-2' },
         { value: '-1', label: '-1' },
         { value: '3', label: '3' }
-    ]
+    ]*/
 
 
   // console.log(watch("example")); you can watch individual input by pass the name of the input
 
   return (
-    <form className="attempt_form container" onSubmit={handleSubmit(onSubmit)}>
-      <Title text='Enter Coordinates'/>
-      {/* <label>X</label> */}
-        <p >X:</p>
-      <input placeholder='X: from -4 to 4'
-          {...register("x", {required: true, pattern: /^-?[0-9]+$/i, min: -4, max: 4 })} />
-      {errors.x && (
-        <p className='error'>X has to be in -4 ... 4</p>
-      )}
+      <form className="attempt_form container" onSubmit={handleSubmit(onSubmit)}>
+          <Title text='Enter Coordinates'/>
+          {/* <label>X</label> */}
+          <div style={{marginBottom: "30px"}}>
+          <p>X:</p>
+          <input placeholder='X: from -4 to 4'
+                 {...register("x", {required: true, pattern: /^-?[0-9]+$/i, min: -4, max: 4})} />
+          {errors.x && (
+              <p className='error'>X has to be in -4 ... 4</p>
+          )}
+          </div>
 
-        <p >Y:</p>
+          {/*<p >Y:</p>
         <select  placeholder='y: from -5 to 5'  {...register("y", {required: true})}>
             <option value="-5">-5</option>
             <option value="-4">-4</option>
@@ -78,9 +85,27 @@ const AttemptForm = ({serverPort}) => {
 
       {errors.y && (
         <p className='error'> Y has to be in -5 ... 5</p>
-      )}
+      )}*/}
 
-        <p >R:</p>
+          <p>Y:</p>
+          <div style={{marginBottom: "30px"}}>
+              <div className="w-14rem">
+                  <input
+                      value={value}
+                      placeholder='Y: from -5 to 5'
+                      {...register("y", {required: true})}/>
+                  {errors.y && (
+                      <p className='error'> Y has to be in -5 ... 5</p>
+                  )}
+                  <Slider
+                      value={value}
+                      min={-5} max={5} step={0.1}
+                      onChange={(e) => {setValue(e.value)}} />
+              </div>
+          </div>
+
+
+          {/*<p >R:</p>
         <select  id= "Rval" placeholder='R: from 1 to 5' {...register("r", {required: true, onChange:(e)=>{
                 console.log("changed r")
                 //UpdatePlot();
@@ -94,20 +119,21 @@ const AttemptForm = ({serverPort}) => {
 
         {errors.r && (
             <p className='error'>R has to be in 1 ... 5</p>
-        )}
-
-
-        {/*<p >R:</p>
-        <input id="Rval" placeholder='R: from -3 to 3'
-               {...register("x", {required: true, pattern: /^-?[0-9]+$/i, min: -3, max: 3 })} />
-        {errors.r && (
-            <p className='error'>X has to be in -3 ... 3</p>
         )}*/}
+          <p>R:</p>
+          <input id="Rval" placeholder='R: from -3 to 3'
+                 {...register("r", {
+                     required: true, pattern: /^-?[0-9]+$/i, min: -3, max: 3, onChange: (e) => {
+                         console.log('changed R')
+                     }
+                 })} />
+          {errors.r && (
+              <p className='error'>R has to be in -3 ... 3</p>
+          )}
 
 
-
-      <input type="submit" value="Submit" className='btn-block btn' />
-    </form>
+          <input type="submit" value="Submit" className='btn-block btn'/>
+      </form>
   );
 
 }
@@ -116,11 +142,11 @@ export default AttemptForm;
 
 
 let tryToSendAddAttemptRequest = async (port, token, data) => {
-  console.log(port);
-  let url = "http://localhost:"+ port +"/attempts";
-  console.log("Sending POST request to url: " + url + ". With body: " + JSON.stringify(data));
-  const response = await fetch(url, {
-    method: 'POST',
+    console.log(port);
+    let url = "http://localhost:" + port + "/attempts";
+    console.log("Sending POST request to url: " + url + ". With body: " + JSON.stringify(data));
+    const response = await fetch(url, {
+        method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': "Bearer " + token

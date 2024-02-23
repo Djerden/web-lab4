@@ -19,6 +19,7 @@ export const tokenSlice = createSlice({
 export const selectToken = state => state.token.value;
 
 // Action creators are generated for each case reducer function
-export const {setToken, resetToken } = tokenSlice.actions;
+export const {setToken,
+  resetToken } = tokenSlice.actions;
 
 export default tokenSlice.reducer;

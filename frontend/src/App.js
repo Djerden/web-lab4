@@ -4,6 +4,8 @@ import RegisterPage from './components/registrContainer/RegisterPage';
 import Header from './components/Header';
 import MainPage from './components/MainPageContainer/MainPage';
 
+
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 function App() {
     const serverPort = 2287;
     return(
